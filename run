@@ -1,0 +1,11 @@
+#!/bin/bash
+
+gradle --offline clean build jar
+HERE=`pwd`
+CP=`./gradlew printCP | grep 'home' | awk '{print $1}{print ":"}' |  tr -d "[:space:]" | xargs`
+CP=$CP:"$HERE/build/classes/java/main"
+PACKAGE_NAME_PREFIX_TO_INSTRUMENT="foo"
+
+time java -cp $CP -noverify -javaagent:build/libs/instr-agent.jar="--pname=${PACKAGE_NAME_PREFIX_TO_INSTRUMENT}" org.junit.runner.JUnitCore foo.TestFoo
+
+time java -cp $CP -noverify org.junit.runner.JUnitCore foo.TestFoo

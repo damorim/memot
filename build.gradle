@@ -1,0 +1,45 @@
+// Apply the java-library plugin to add support for Java Library
+apply plugin: 'java'
+
+repositories {
+    jcenter()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main', 'src/examples']
+        }
+        resources {
+            srcDirs = ['src/resources']
+        }
+    }
+}
+
+jar {
+    manifest {
+        attributes 'Premain-Class': 'purity.InstrumentationAgent'
+    }
+    baseName = 'instr-agent'
+}
+
+/* task to print classpath */
+task printCP {
+    doLast {
+        configurations.testRuntime.each { println it }
+    }
+}
+
+dependencies {
+    compile group: 'org.ow2.asm', name: 'asm', version: '5.0.4'
+    compile group: 'org.ow2.asm', name: 'asm-tree', version: '5.0.4'
+    compile group: 'org.ow2.asm', name: 'asm-util', version: '5.0.4'
+    compile group: 'asm', name: 'asm-commons', version: '3.3.1'
+    compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
+    compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.0'
+    compile group: 'junit', name: 'junit', version:'4.12'
+    
+    // Use JUnit test framework
+    testImplementation 'junit:junit:4.12'
+}
+
